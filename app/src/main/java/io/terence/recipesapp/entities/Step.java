@@ -1,8 +1,10 @@
 package io.terence.recipesapp.entities;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+@Entity(tableName = "steps")
 public class Step extends BaseEntity {
 
     @PrimaryKey(autoGenerate = true)
