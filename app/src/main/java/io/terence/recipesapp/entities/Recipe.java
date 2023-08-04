@@ -18,6 +18,7 @@ public class Recipe extends BaseEntity {
     @NonNull
     private String title;
     private String description;
+    private List<Step> steps;
 
     public int getRecipeId() {
         return recipeId;
@@ -41,5 +42,13 @@ public class Recipe extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
     }
 }
