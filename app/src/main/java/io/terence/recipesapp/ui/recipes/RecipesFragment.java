@@ -18,11 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import io.terence.recipesapp.R;
 import io.terence.recipesapp.common.RecipeClickListener;
+import io.terence.recipesapp.config.AppDatabase;
+import io.terence.recipesapp.daos.RecipeDao;
 import io.terence.recipesapp.databinding.FragmentRecipesBinding;
 import io.terence.recipesapp.databinding.ItemRecipeBinding;
 import io.terence.recipesapp.entities.Recipe;
 import io.terence.recipesapp.ui.reflow.NewRecipeFragment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,28 +36,46 @@ import java.util.List;
  * and shows items using GridLayoutManager in a large screen.
  */
 public class RecipesFragment extends Fragment {
+    private View root;
+    private RecipeDao recipeDao;
+    private AppDatabase appDatabase;
 
+    List<Recipe> entityList = new ArrayList<>();
     private FragmentRecipesBinding binding;
+    private RecipeAdapter recipeAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        RecipesViewModel recipesViewModel =
-                new ViewModelProvider(this).get(RecipesViewModel.class);
 
         binding = FragmentRecipesBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        RecyclerView recyclerView = binding.recyclerviewRecipes;
-        ListAdapter<String, RecipeViewHolder> adapter = new RecipeAdapter(null//TODO recipes
-                , recipe -> {
-            Intent intent =  new Intent(this.getContext(), NewRecipeFragment.class);
-            intent.putExtra("editRecipeId", recipe.getRecipeId());
-            startActivity(intent);});
-        recyclerView.setAdapter(adapter);
-        recipesViewModel.getTexts().observe(getViewLifecycleOwner(), adapter::submitList);
+        appDatabase = AppDatabase.getInstance(this.getContext());
+        recipeDao = appDatabase.recipeDao();
+        //return loadTableData();
         return root;
     }
 
+    private void loadTableData() {
+
+        RecyclerView recyclerView = binding.recyclerviewRecipes;
+        new Thread(() -> {
+            RecipesViewModel recipesViewModel =
+                    new ViewModelProvider(this).get(RecipesViewModel.class);
+            entityList = recipeDao.getAllEntities();
+            getActivity().runOnUiThread(() -> {
+                recipeAdapter = new RecipeAdapter(entityList, recipe -> {
+                    Intent intent =  new Intent(this.getContext(), NewRecipeFragment.class);
+                    intent.putExtra("editRecipeId", recipe.getRecipeId());
+                    startActivity(intent);
+                });
+                recyclerView.setAdapter(recipeAdapter);
+                //alerts();
+
+                root = binding.getRoot();
+                recipesViewModel.getTexts().observe(getViewLifecycleOwner(), recipeAdapter::submitList);
+            });
+        }).start();
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -95,10 +116,6 @@ public class RecipesFragment extends Fragment {
             Recipe recipe = recipes.get(position);
 
             holder.textView.setText(getItem(position));
-            holder.imageView.setImageDrawable(
-                    ResourcesCompat.getDrawable(holder.imageView.getResources(),
-                            drawables.get(position),
-                            null));
             holder.bind(recipe, listener);
         }
     }

@@ -1,8 +1,9 @@
 package io.terence.recipesapp.entities;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
+@Entity
 public class Ingredient extends BaseEntity {
 
     @PrimaryKey(autoGenerate = true)
