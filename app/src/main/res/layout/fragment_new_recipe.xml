@@ -3,20 +3,80 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.reflow.NewRecipeFragment">
 
-    <TextView
-        android:id="@+id/text_new_recipe"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="@dimen/fab_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/recipe_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:hint="@string/recipe_title"
+                android:ems="10"
+                android:inputType="text"
+                tools:layout_editor_absoluteX="100dp"
+                tools:layout_editor_absoluteY="116dp" />
+
+            <EditText
+                android:id="@+id/recipe_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:hint="@string/recipe_description"
+                android:ems="10"
+                android:inputType="text"
+                tools:layout_editor_absoluteX="102dp"
+                tools:layout_editor_absoluteY="184dp" />
+
+            <Button
+                android:id="@+id/save_recipe_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save_recipe" />
+            <Button
+                android:id="@+id/add_ingredient_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_ingredient" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/ingredients_fragment_view"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:name="io.terence.recipesapp.ui.ingredients.IngredientsFragment">
+            </androidx.fragment.app.FragmentContainerView>
+
+            <Button
+                android:id="@+id/add_step_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_step" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/steps_fragment_view"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:name="io.terence.recipesapp.ui.steps.ItemStepsFragment">
+            </androidx.fragment.app.FragmentContainerView>
+
+
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

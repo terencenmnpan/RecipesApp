@@ -17,7 +17,7 @@ public class RecipesViewModel extends ViewModel {
         for (int i = 1; i <= 16; i++) {
             texts.add("This is item # " + i);
         }
-        mTexts.setValue(texts);
+        mTexts.postValue(texts);
     }
 
     public LiveData<List<String>> getTexts() {

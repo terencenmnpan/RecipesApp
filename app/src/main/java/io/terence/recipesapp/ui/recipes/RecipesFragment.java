@@ -12,7 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,19 +43,23 @@ public class RecipesFragment extends Fragment {
     private View root;
     private RecipeDao recipeDao;
     private AppDatabase appDatabase;
-
+    androidx.navigation.fragment.NavHostFragment navHostFragment;
+    NavController navController;
     List<Recipe> entityList = new ArrayList<>();
     private FragmentRecipesBinding binding;
     private RecipeAdapter recipeAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_content_main);
+        navController = navHostFragment.getNavController();
 
         binding = FragmentRecipesBinding.inflate(inflater, container, false);
 
         appDatabase = AppDatabase.getInstance(this.getContext());
         recipeDao = appDatabase.recipeDao();
-        //return loadTableData();
+        loadTableData();
         return root;
     }
 
@@ -62,17 +70,22 @@ public class RecipesFragment extends Fragment {
             RecipesViewModel recipesViewModel =
                     new ViewModelProvider(this).get(RecipesViewModel.class);
             entityList = recipeDao.getAllEntities();
+            root = binding.getRoot();
             getActivity().runOnUiThread(() -> {
                 recipeAdapter = new RecipeAdapter(entityList, recipe -> {
-                    Intent intent =  new Intent(this.getContext(), NewRecipeFragment.class);
-                    intent.putExtra("editRecipeId", recipe.getRecipeId());
-                    startActivity(intent);
+                    //Intent intent =  new Intent(this.getContext(), NewRecipeFragment.class);
+                    //intent.putExtra("editRecipeId", recipe.getRecipeId());
+                    //startActivity(intent);
+                    io.terence.recipesapp.ui.recipes.RecipesFragmentDirections.ActionNavRecipesToNavNewRecipe actionNavRecipesToNavNewRecipe =
+                            RecipesFragmentDirections.actionNavRecipesToNavNewRecipe();
+                    actionNavRecipesToNavNewRecipe.setRecipeId(recipe.getRecipeId());
+                    navController.navigate(actionNavRecipesToNavNewRecipe);
                 });
+                recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
                 recyclerView.setAdapter(recipeAdapter);
                 //alerts();
 
-                root = binding.getRoot();
-                recipesViewModel.getTexts().observe(getViewLifecycleOwner(), recipeAdapter::submitList);
+                //recipesViewModel.getTexts().observe(RecipesFragment.this, recipeAdapter::submitList);
             });
         }).start();
     }
@@ -114,10 +127,15 @@ public class RecipesFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
             Recipe recipe = recipes.get(position);
-
-            holder.textView.setText(getItem(position));
+            holder.textView.setText(recipe.getTitle());
             holder.bind(recipe, listener);
         }
+
+        @Override
+        public int getItemCount() {
+            return recipes.size();
+        }
+
     }
 
     private static class RecipeViewHolder extends RecyclerView.ViewHolder {

@@ -9,13 +9,27 @@
         android:id="@+id/nav_recipes"
         android:name="io.terence.recipesapp.ui.recipes.RecipesFragment"
         android:label="@string/menu_recipes"
-        tools:layout="@layout/fragment_recipes" />
+        tools:layout="@layout/fragment_recipes" >
+        <action
+            android:id="@+id/action_nav_recipes_to_nav_new_recipe"
+            app:destination="@id/nav_new_recipe">
+            <argument
+                android:name="recipeId"
+                android:defaultValue="1"
+                app:argType="integer" />
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_new_recipe"
         android:name="io.terence.recipesapp.ui.reflow.NewRecipeFragment"
         android:label="@string/menu_new_recipe"
-        tools:layout="@layout/fragment_new_recipe" />
+        tools:layout="@layout/fragment_new_recipe" >
+        <argument
+            android:name="recipeId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_shopping_list"

@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel;
 
 public class NewRecipeViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    //private final MutableLiveData<String> mText;
 
     public NewRecipeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is New Recipe fragment");
+        //mText = new MutableLiveData<>();
+        //mText.setValue("This is New Recipe fragment");
     }
 
-    public LiveData<String> getText() {
-        return mText;
-    }
+    //public LiveData<String> getText() {
+    //    return mText;
+    //}
 }

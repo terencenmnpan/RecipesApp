@@ -22,4 +22,9 @@
     <string name="image_view_item_transform_content_description">Represents an image view in the
         item
     </string>
+    <string name="recipe_title">Recipe Title</string>
+    <string name="recipe_description">Recipe Description</string>
+    <string name="add_ingredient">Add Ingredient</string>
+    <string name="add_step">Add Step</string>
+    <string name="save_recipe">Save Recipe</string>
 </resources>

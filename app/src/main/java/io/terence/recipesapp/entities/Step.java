@@ -14,6 +14,7 @@ public class Step extends BaseEntity {
     private String order;
     @NonNull
     private String description;
+    private int recipeId;
 
     public int getStepId() {
         return stepId;
@@ -37,5 +38,13 @@ public class Step extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 }

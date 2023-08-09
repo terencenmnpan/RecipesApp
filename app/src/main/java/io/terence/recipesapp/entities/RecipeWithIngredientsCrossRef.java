@@ -1,13 +1,8 @@
 package io.terence.recipesapp.entities;
 
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 
-@Entity(primaryKeys = {"recipeId", "ingredientId"}/*,
-        foreignKeys = {
-                @ForeignKey(entity = Recipe.class, parentColumns = "recipeId", childColumns = "recipeId"),
-                @ForeignKey(entity = Ingredient.class, parentColumns = "ingredientId", childColumns = "ingredientId")
-        }*/)
+@Entity(primaryKeys = {"recipeId", "ingredientId"})
 public class RecipeWithIngredientsCrossRef extends BaseEntity {
     int recipeId;
     int ingredientId;
