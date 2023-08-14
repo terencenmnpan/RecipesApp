@@ -1,5 +1,6 @@
 package io.terence.recipesapp.ui.steps;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -11,8 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import io.terence.recipesapp.R;
+import io.terence.recipesapp.entities.Ingredient;
+import io.terence.recipesapp.entities.Step;
 import io.terence.recipesapp.placeholder.PlaceholderContent;
 
 /**
@@ -69,4 +74,5 @@ public class ItemStepsFragment extends Fragment {
         }
         return view;
     }
+
 }

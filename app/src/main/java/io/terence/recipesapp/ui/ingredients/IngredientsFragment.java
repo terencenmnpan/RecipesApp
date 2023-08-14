@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -13,7 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import io.terence.recipesapp.R;
-import io.terence.recipesapp.ui.ingredients.placeholder.PlaceholderContent;
+import io.terence.recipesapp.entities.Ingredient;
+import io.terence.recipesapp.ui.reflow.NewRecipeViewModel;
 
 /**
  * A fragment representing a list of Items.
@@ -56,6 +59,8 @@ public class IngredientsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.ingredient_item_list, container, false);
 
+        NewRecipeViewModel newRecipeViewModel =
+                new ViewModelProvider(requireActivity()).get(NewRecipeViewModel.class);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -65,8 +70,15 @@ public class IngredientsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new IngredientsRecyclerViewAdapter(PlaceholderContent.ITEMS));
+            ListAdapter<Ingredient, IngredientsRecyclerViewAdapter.ViewHolder> ingredientDtoListAdapter = new IngredientsRecyclerViewAdapter();
+
+            newRecipeViewModel.getRecipeWithIngredientsAndSteps().observe(getViewLifecycleOwner(), recipe -> ingredientDtoListAdapter.submitList(recipe.ingredients));
+            recyclerView.setAdapter(ingredientDtoListAdapter);
+
+
         }
+
+        //newRecipeViewModel.getmIngredients().observe(getViewLifecycleOwner(), recyclerView);
         return view;
     }
 }

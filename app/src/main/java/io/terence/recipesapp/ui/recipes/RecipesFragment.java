@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -102,7 +103,7 @@ public class RecipesFragment extends Fragment {
 
         protected RecipeAdapter(List<Recipe> recipes, RecipeClickListener listener) {
 
-            super(new DiffUtil.ItemCallback<String>() {
+            super(new DiffUtil.ItemCallback<>() {
                 @Override
                 public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
                     return oldItem.equals(newItem);
@@ -142,15 +143,18 @@ public class RecipesFragment extends Fragment {
 
         private final ImageView imageView;
         private final TextView textView;
+        private final Button addToShopping;
 
         public RecipeViewHolder(ItemRecipeBinding binding) {
             super(binding.getRoot());
             imageView = binding.imageViewItemTransform;
             textView = binding.textViewItemTransform;
+            addToShopping = binding.button;
         }
 
         public void bind(final Recipe recipe, final RecipeClickListener listener) {
             itemView.setOnClickListener(v -> listener.onRecipeClick(recipe));
+            //TODO add on fling gesture listener for addtoshopping cart
         }
     }
 }

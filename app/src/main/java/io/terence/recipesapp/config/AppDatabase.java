@@ -1,5 +1,6 @@
 package io.terence.recipesapp.config;
 
+import android.app.Application;
 import android.content.Context;
 
 import androidx.room.Database;
@@ -7,14 +8,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import io.terence.recipesapp.daos.IngredientDao;
 import io.terence.recipesapp.daos.RecipeDao;
+import io.terence.recipesapp.daos.StepDao;
 import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Recipe;
-import io.terence.recipesapp.entities.RecipeWithIngredientsCrossRef;
 import io.terence.recipesapp.entities.Step;
 import kotlin.jvm.Volatile;
 
-@Database(entities = {Recipe.class, Ingredient.class, RecipeWithIngredientsCrossRef.class, Step.class}, version = 1)
+@Database(entities = {Recipe.class, Ingredient.class, Step.class}, version = 1)
 @TypeConverters(Converters.class)
 public abstract class AppDatabase extends RoomDatabase {
     @Volatile
@@ -35,6 +37,7 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract RecipeDao recipeDao();
-//
-    //public abstract ExcursionDao excursionDao();
+    public abstract IngredientDao ingredientDao();
+
+    public abstract StepDao stepDao();
 }

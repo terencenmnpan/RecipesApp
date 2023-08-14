@@ -1,11 +1,15 @@
 package io.terence.recipesapp;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -16,23 +20,32 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import io.terence.recipesapp.config.AppDatabase;
+import io.terence.recipesapp.daos.RecipeDao;
 import io.terence.recipesapp.databinding.ActivityMainBinding;
+import io.terence.recipesapp.entities.Recipe;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    private RecipeDao recipeDao;
+    private AppDatabase appDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Initialize stuff
+        appDatabase = AppDatabase.getInstance(getApplicationContext());
+        recipeDao = appDatabase.recipeDao();
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
         if (binding.appBarMain.fab != null) {
-            binding.appBarMain.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show());
+            binding.appBarMain.fab.setOnClickListener(this::addRecipe);
         }
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main);
         assert navHostFragment != null;
@@ -86,5 +99,37 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+
+    public void addRecipe(View view) {
+        Context context = view.getContext();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+// Add a TextView here for the "Title" label, as noted in the comments
+        final EditText recipeName = new EditText(context);
+        recipeName.setHint("Recipe Name");
+        layout.addView(recipeName); // Notice this is an add method
+
+// Add another TextView here for the "Description" label
+        final EditText recipeTitle = new EditText(context);
+        recipeTitle.setHint("Recipe Title");
+        layout.addView(recipeTitle); // Another add method
+
+
+        dialog.setView(layout); // Again this is a set method, not add
+        dialog.setPositiveButton("Save Recipe",
+                (dialog1, which) -> {
+                    Recipe recipe = new Recipe();
+                    recipe.setTitle(recipeName.getText().toString());
+                    recipe.setDescription(recipeTitle.getText().toString());
+                    recipeDao.upsert(recipe);
+                    //newRecipeViewModel.addIngredient(ingredientDto);
+                    //newRecipeViewModel.getmIngredients().getValue().get(0).setIngredientQuantity("999");
+                    dialog1.dismiss();
+                });
+        dialog.show();
     }
 }

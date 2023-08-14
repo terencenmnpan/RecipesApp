@@ -1,19 +1,47 @@
 package io.terence.recipesapp.ui.reflow;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class NewRecipeViewModel extends ViewModel {
+import io.terence.recipesapp.config.AppDatabase;
+import io.terence.recipesapp.daos.RecipeDao;
+import io.terence.recipesapp.entities.RecipeWithIngredientsAndSteps;
 
-    //private final MutableLiveData<String> mText;
+public class NewRecipeViewModel extends AndroidViewModel {
 
-    public NewRecipeViewModel() {
-        //mText = new MutableLiveData<>();
-        //mText.setValue("This is New Recipe fragment");
+    //private final LiveData<String> mRecipeName;
+    //private final LiveData<String> mRecipeDescription;
+    //private final LiveData<List<IngredientDto>> mIngredients;
+    //private final LiveData<List<Step>> mSteps;
+    private AppDatabase appDatabase;
+    private RecipeDao recipeDao;
+    private int recipeId;
+
+    public NewRecipeViewModel(Application application) {
+        super(application);
+
+        appDatabase = AppDatabase.getInstance(this.getApplication());
+        recipeDao = appDatabase.recipeDao();
+        //mRecipeName = new MutableLiveData<>();
+        //mRecipeDescription = new MutableLiveData<>();
+        //mIngredients = new MutableLiveData<>(new ArrayList<>());
+        //IngredientDto testIngredient = new IngredientDto();
+        //testIngredient.setIngredientName("Flour");
+        //testIngredient.setIngredientQuantity("1");
+        //testIngredient.setIngredientUnit("cup");
+        //mIngredients.getValue().add(testIngredient);
+        //mSteps = new MutableLiveData<>(new ArrayList<>());
+    }
+    public LiveData<RecipeWithIngredientsAndSteps> getRecipeWithIngredientsAndSteps(){
+        return recipeDao.loadSingleRecipeWithIngredientsAndSteps(recipeId);
+    }
+    public int getRecipeId() {
+        return recipeId;
     }
 
-    //public LiveData<String> getText() {
-    //    return mText;
-    //}
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
+    }
 }

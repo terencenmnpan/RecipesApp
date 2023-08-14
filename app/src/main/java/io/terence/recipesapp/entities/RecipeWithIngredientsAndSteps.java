@@ -1,23 +1,23 @@
 package io.terence.recipesapp.entities;
 
 import androidx.room.Embedded;
-import androidx.room.Junction;
 import androidx.room.Relation;
 
 import java.util.List;
 
-public class RecipeWithIngredients {
+public class RecipeWithIngredientsAndSteps {
+
     @Embedded
     public Recipe recipe;
+
     @Relation(
             parentColumn = "recipeId",
-            entityColumn = "ingredientId",
-            associateBy = @Junction(RecipeWithIngredientsCrossRef.class)
+            entityColumn = "recipeId"
     )
     public List<Ingredient> ingredients;
     @Relation(
             parentColumn = "recipeId",
-            entityColumn = "stepId"
+            entityColumn = "recipeId"
     )
     public List<Step> steps;
 }

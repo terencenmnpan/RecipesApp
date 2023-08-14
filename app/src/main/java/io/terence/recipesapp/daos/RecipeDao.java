@@ -1,5 +1,6 @@
 package io.terence.recipesapp.daos;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -11,7 +12,7 @@ import androidx.room.Upsert;
 import java.util.List;
 
 import io.terence.recipesapp.entities.Recipe;
-import io.terence.recipesapp.entities.RecipeWithIngredients;
+import io.terence.recipesapp.entities.RecipeWithIngredientsAndSteps;
 
 @Dao
 public interface RecipeDao {
@@ -34,11 +35,14 @@ public interface RecipeDao {
     Recipe loadSingle(int id);
     @Transaction
     @Query("SELECT * FROM recipes")
-    List<RecipeWithIngredients> getAllVacationsWithExcursions();
+    List<RecipeWithIngredientsAndSteps> getAllRecipeWithIngredientsAndSteps();
 
-    @Transaction
     @Query("SELECT * FROM recipes WHERE recipeId=:id")
-    RecipeWithIngredients getRecipeWithIngredients(int id);
+    LiveData<RecipeWithIngredientsAndSteps> loadSingleRecipeWithIngredientsAndSteps(int id);
+//
+    //@Transaction
+    //@Query("SELECT * FROM recipes WHERE recipeId=:id")
+    //RecipeWithIngredients getRecipeWithIngredients(int id);
 
     //@Query("SELECT count(*) FROM steps WHERE vacationId=:id")
     //int countExcursions(int id);

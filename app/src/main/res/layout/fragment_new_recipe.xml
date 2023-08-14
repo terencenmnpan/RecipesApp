@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:onClick="addIngredient"
     tools:context=".ui.reflow.NewRecipeFragment">
 
     <ScrollView
@@ -27,8 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:hint="@string/recipe_title"
                 android:ems="10"
+                android:hint="@string/recipe_title"
                 android:inputType="text"
                 tools:layout_editor_absoluteX="100dp"
                 tools:layout_editor_absoluteY="116dp" />
@@ -38,8 +39,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:hint="@string/recipe_description"
                 android:ems="10"
+                android:hint="@string/recipe_description"
                 android:inputType="text"
                 tools:layout_editor_absoluteX="102dp"
                 tools:layout_editor_absoluteY="184dp" />
@@ -49,18 +50,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/save_recipe" />
+
             <Button
                 android:id="@+id/add_ingredient_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="addIngredient"
                 android:text="@string/add_ingredient" />
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/ingredients_fragment_view"
-                android:layout_height="match_parent"
+                android:name="io.terence.recipesapp.ui.ingredients.IngredientsFragment"
                 android:layout_width="match_parent"
-                android:name="io.terence.recipesapp.ui.ingredients.IngredientsFragment">
-            </androidx.fragment.app.FragmentContainerView>
+                android:layout_height="match_parent" />
 
             <Button
                 android:id="@+id/add_step_btn"
@@ -70,10 +72,9 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/steps_fragment_view"
-                android:layout_height="match_parent"
+                android:name="io.terence.recipesapp.ui.steps.ItemStepsFragment"
                 android:layout_width="match_parent"
-                android:name="io.terence.recipesapp.ui.steps.ItemStepsFragment">
-            </androidx.fragment.app.FragmentContainerView>
+                android:layout_height="match_parent" />
 
 
         </LinearLayout>

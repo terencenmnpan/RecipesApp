@@ -1,27 +1,32 @@
 package io.terence.recipesapp.ui.ingredients;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import io.terence.recipesapp.ui.ingredients.placeholder.PlaceholderContent.PlaceholderItem;
 import io.terence.recipesapp.databinding.IngredientItemBinding;
+import io.terence.recipesapp.entities.Ingredient;
 
-import java.util.List;
+public class IngredientsRecyclerViewAdapter extends ListAdapter<Ingredient, IngredientsRecyclerViewAdapter.ViewHolder> {
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
- * TODO: Replace the implementation with code for your data type.
- */
-public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRecyclerViewAdapter.ViewHolder> {
+    public IngredientsRecyclerViewAdapter() {
 
-    private final List<PlaceholderItem> mValues;
+        super(new DiffUtil.ItemCallback<>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Ingredient oldItem, @NonNull Ingredient newItem) {
+                return oldItem.equals(newItem);
+            }
 
-    public IngredientsRecyclerViewAdapter(List<PlaceholderItem> items) {
-        mValues = items;
+            @Override
+            public boolean areContentsTheSame(@NonNull Ingredient oldItem, @NonNull Ingredient newItem) {
+                return oldItem.equals(newItem);
+            }
+        });
     }
 
     @Override
@@ -33,30 +38,34 @@ public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<Ingredi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mItem = getCurrentList().get(position);
+        holder.mIngredientNameView.setText(getItem(position).getIngredientName());
+        holder.mIngredientQuantityView.setText(getItem(position).getQuantity());
+        holder.mIngredientUnitView.setText(getItem(position).getUnit());
     }
 
-    @Override
-    public int getItemCount() {
-        return mValues.size();
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public PlaceholderItem mItem;
+        public final TextView mIngredientNameView;
+        public final TextView mIngredientQuantityView;
+        public final TextView mIngredientUnitView;
+        public Ingredient mItem;
 
         public ViewHolder(IngredientItemBinding binding) {
             super(binding.getRoot());
-            mIdView = binding.itemNumber;
-            mContentView = binding.content;
+            mIngredientNameView = binding.ingredientName;
+            mIngredientQuantityView = binding.ingredientQuantity;
+            mIngredientUnitView = binding.ingredientUnit;
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return "ViewHolder{" +
+                    "mIngredientNameView=" + mIngredientNameView +
+                    ", mIngredientQuantityView=" + mIngredientQuantityView +
+                    ", mIngredientUnitView=" + mIngredientUnitView +
+                    ", mItem=" + mItem +
+                    '}';
         }
     }
 }

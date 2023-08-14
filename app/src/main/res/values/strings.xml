@@ -27,4 +27,5 @@
     <string name="add_ingredient">Add Ingredient</string>
     <string name="add_step">Add Step</string>
     <string name="save_recipe">Save Recipe</string>
+    <string name="add_to_shopping_list">Add to List</string>
 </resources>

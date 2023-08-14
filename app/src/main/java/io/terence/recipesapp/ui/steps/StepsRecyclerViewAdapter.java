@@ -1,11 +1,16 @@
 package io.terence.recipesapp.ui.steps;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import io.terence.recipesapp.entities.Ingredient;
+import io.terence.recipesapp.entities.Step;
 import io.terence.recipesapp.placeholder.PlaceholderContent.PlaceholderItem;
 import io.terence.recipesapp.databinding.FragmentStepBinding;
 
@@ -15,12 +20,23 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class StepsRecyclerViewAdapter extends RecyclerView.Adapter<StepsRecyclerViewAdapter.ViewHolder> {
+public class StepsRecyclerViewAdapter extends ListAdapter<Step, StepsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<PlaceholderItem> mValues;
 
-    public StepsRecyclerViewAdapter(List<PlaceholderItem> items) {
-        mValues = items;
+    public StepsRecyclerViewAdapter() {
+
+        super(new DiffUtil.ItemCallback<>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Step oldItem, @NonNull Step newItem) {
+                return oldItem.equals(newItem);
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Step oldItem, @NonNull Step newItem) {
+                return oldItem.equals(newItem);
+            }
+        });
+
     }
 
     @Override
