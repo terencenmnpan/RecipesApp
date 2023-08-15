@@ -9,17 +9,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Step;
-import io.terence.recipesapp.placeholder.PlaceholderContent.PlaceholderItem;
 import io.terence.recipesapp.databinding.FragmentStepBinding;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link PlaceholderItem}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class StepsRecyclerViewAdapter extends ListAdapter<Step, StepsRecyclerViewAdapter.ViewHolder> {
 
 
@@ -48,30 +42,26 @@ public class StepsRecyclerViewAdapter extends ListAdapter<Step, StepsRecyclerVie
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mValues.size();
+        holder.mItem = getCurrentList().get(position);
+        holder.mStepDescription.setText(getItem(position).getDescription());
+        holder.mStepNumber.setText(getItem(position).getOrder());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public PlaceholderItem mItem;
+        public final TextView mStepNumber;
+        public final TextView mStepDescription;
+        public Step mItem;
 
         public ViewHolder(FragmentStepBinding binding) {
             super(binding.getRoot());
-            mIdView = binding.stepNumber;
-            mContentView = binding.stepDescription;
+            mStepNumber = binding.stepNumber;
+            mStepDescription = binding.stepDescription;
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mStepNumber.getText() + "'"
+                    + mStepDescription.getText() + "'";
         }
     }
 }

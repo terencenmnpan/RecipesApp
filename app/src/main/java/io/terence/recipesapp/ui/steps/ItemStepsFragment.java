@@ -1,24 +1,21 @@
 package io.terence.recipesapp.ui.steps;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
 import io.terence.recipesapp.R;
-import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Step;
-import io.terence.recipesapp.placeholder.PlaceholderContent;
+import io.terence.recipesapp.ui.reflow.NewRecipeViewModel;
 
 /**
  * A fragment representing a list of Items.
@@ -61,16 +58,20 @@ public class ItemStepsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_list, container, false);
 
+        NewRecipeViewModel newRecipeViewModel =
+                new ViewModelProvider(requireActivity()).get(NewRecipeViewModel.class);
         // Set the adapter
-        if (view instanceof RecyclerView) {
+        if (view instanceof RecyclerView recyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new StepsRecyclerViewAdapter(PlaceholderContent.ITEMS));
+            ListAdapter<Step, StepsRecyclerViewAdapter.ViewHolder> stepsRecyclerViewAdapter = new StepsRecyclerViewAdapter();
+
+            newRecipeViewModel.getRecipeWithIngredientsAndSteps().observe(getViewLifecycleOwner(), recipe -> stepsRecyclerViewAdapter.submitList(recipe.steps));
+            recyclerView.setAdapter(stepsRecyclerViewAdapter);
         }
         return view;
     }

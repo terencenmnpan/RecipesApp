@@ -29,7 +29,7 @@ public interface RecipeDao {
     void delete(Recipe entity);
 
     @Query("SELECT * FROM recipes")
-    List<Recipe> getAllEntities();
+    LiveData<List<Recipe>> getAllEntities();
 
     @Query("SELECT * FROM recipes WHERE recipeId=:id")
     Recipe loadSingle(int id);

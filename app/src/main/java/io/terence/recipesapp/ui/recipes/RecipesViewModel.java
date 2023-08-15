@@ -1,5 +1,8 @@
 package io.terence.recipesapp.ui.recipes;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -7,20 +10,22 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipesViewModel extends ViewModel {
+import io.terence.recipesapp.config.AppDatabase;
+import io.terence.recipesapp.daos.RecipeDao;
+import io.terence.recipesapp.entities.Recipe;
 
-    private final MutableLiveData<List<String>> mTexts;
+public class RecipesViewModel extends AndroidViewModel {
+    private AppDatabase appDatabase;
+    private RecipeDao recipeDao;
 
-    public RecipesViewModel() {
-        mTexts = new MutableLiveData<>();
-        List<String> texts = new ArrayList<>();
-        for (int i = 1; i <= 16; i++) {
-            texts.add("This is item # " + i);
-        }
-        mTexts.postValue(texts);
+    public RecipesViewModel(Application application) {
+        super(application);
+
+        appDatabase = AppDatabase.getInstance(this.getApplication());
+        recipeDao = appDatabase.recipeDao();
     }
 
-    public LiveData<List<String>> getTexts() {
-        return mTexts;
+    public LiveData<List<Recipe>> getRecipes(){
+        return recipeDao.getAllEntities();
     }
 }

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.Relation;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity(tableName = "recipes")
 public class Recipe extends BaseEntity {
@@ -41,5 +42,18 @@ public class Recipe extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return recipeId == recipe.recipeId && title.equals(recipe.title) && Objects.equals(description, recipe.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(recipeId, title, description);
     }
 }

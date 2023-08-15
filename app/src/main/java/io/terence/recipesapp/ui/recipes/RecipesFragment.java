@@ -28,7 +28,10 @@ import io.terence.recipesapp.daos.RecipeDao;
 import io.terence.recipesapp.databinding.FragmentRecipesBinding;
 import io.terence.recipesapp.databinding.ItemRecipeBinding;
 import io.terence.recipesapp.entities.Recipe;
+import io.terence.recipesapp.entities.Step;
 import io.terence.recipesapp.ui.reflow.NewRecipeFragment;
+import io.terence.recipesapp.ui.reflow.NewRecipeViewModel;
+import io.terence.recipesapp.ui.steps.StepsRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,10 +51,12 @@ public class RecipesFragment extends Fragment {
     NavController navController;
     List<Recipe> entityList = new ArrayList<>();
     private FragmentRecipesBinding binding;
-    private RecipeAdapter recipeAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        RecipesViewModel recipesViewModel =
+                new ViewModelProvider(this).get(RecipesViewModel.class);
+
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_content_main);
         navController = navHostFragment.getNavController();
@@ -67,28 +72,19 @@ public class RecipesFragment extends Fragment {
     private void loadTableData() {
 
         RecyclerView recyclerView = binding.recyclerviewRecipes;
-        new Thread(() -> {
             RecipesViewModel recipesViewModel =
                     new ViewModelProvider(this).get(RecipesViewModel.class);
-            entityList = recipeDao.getAllEntities();
-            root = binding.getRoot();
-            getActivity().runOnUiThread(() -> {
-                recipeAdapter = new RecipeAdapter(entityList, recipe -> {
-                    //Intent intent =  new Intent(this.getContext(), NewRecipeFragment.class);
-                    //intent.putExtra("editRecipeId", recipe.getRecipeId());
-                    //startActivity(intent);
-                    io.terence.recipesapp.ui.recipes.RecipesFragmentDirections.ActionNavRecipesToNavNewRecipe actionNavRecipesToNavNewRecipe =
-                            RecipesFragmentDirections.actionNavRecipesToNavNewRecipe();
-                    actionNavRecipesToNavNewRecipe.setRecipeId(recipe.getRecipeId());
-                    navController.navigate(actionNavRecipesToNavNewRecipe);
-                });
-                recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
-                recyclerView.setAdapter(recipeAdapter);
-                //alerts();
-
-                //recipesViewModel.getTexts().observe(RecipesFragment.this, recipeAdapter::submitList);
+            ListAdapter<Recipe, RecipeViewHolder> stepsRecyclerViewAdapter = new RecipeAdapter(recipe -> {
+                io.terence.recipesapp.ui.recipes.RecipesFragmentDirections.ActionNavRecipesToNavNewRecipe actionNavRecipesToNavNewRecipe =
+                        RecipesFragmentDirections.actionNavRecipesToNavNewRecipe();
+                actionNavRecipesToNavNewRecipe.setRecipeId(recipe.getRecipeId());
+                navController.navigate(actionNavRecipesToNavNewRecipe);
             });
-        }).start();
+            recipesViewModel.getRecipes().observe(getViewLifecycleOwner(), stepsRecyclerViewAdapter::submitList);
+
+            root = binding.getRoot();
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+            recyclerView.setAdapter(stepsRecyclerViewAdapter);
     }
     @Override
     public void onDestroyView() {
@@ -96,25 +92,22 @@ public class RecipesFragment extends Fragment {
         binding = null;
     }
 
-    private static class RecipeAdapter extends ListAdapter<String, RecipeViewHolder> {
-
-        private final List<Recipe> recipes;
+    private static class RecipeAdapter extends ListAdapter<Recipe, RecipeViewHolder> {
         private final RecipeClickListener listener;
 
-        protected RecipeAdapter(List<Recipe> recipes, RecipeClickListener listener) {
+        protected RecipeAdapter(RecipeClickListener listener) {
 
             super(new DiffUtil.ItemCallback<>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+                public boolean areItemsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
                     return oldItem.equals(newItem);
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+                public boolean areContentsTheSame(@NonNull Recipe oldItem, @NonNull Recipe newItem) {
                     return oldItem.equals(newItem);
                 }
             });
-            this.recipes = recipes;
             this.listener = listener;
         }
 
@@ -127,14 +120,9 @@ public class RecipesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-            Recipe recipe = recipes.get(position);
-            holder.textView.setText(recipe.getTitle());
-            holder.bind(recipe, listener);
-        }
 
-        @Override
-        public int getItemCount() {
-            return recipes.size();
+            holder.textView.setText(getItem(position).getTitle());
+            holder.bind(getItem(position), listener);
         }
 
     }
