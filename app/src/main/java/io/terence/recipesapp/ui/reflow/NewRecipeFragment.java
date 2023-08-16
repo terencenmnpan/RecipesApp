@@ -33,7 +33,6 @@ public class NewRecipeFragment extends Fragment {
     private StepDao stepDao;
     private IngredientDao ingredientDao;
     private AppDatabase appDatabase;
-    private Recipe recipe;
     private EditText recipeTitle;
     private EditText recipeDescription;
     private Button saveRecipe;
@@ -44,7 +43,6 @@ public class NewRecipeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         newRecipeViewModel = new ViewModelProvider(requireActivity()).get(NewRecipeViewModel.class);
-        newRecipeViewModel.setRecipeId(1);
         //Initialize stuff
         appDatabase = AppDatabase.getInstance(requireActivity().getApplicationContext());
         recipeDao = appDatabase.recipeDao();
@@ -60,21 +58,22 @@ public class NewRecipeFragment extends Fragment {
         addIngredient = root.findViewById(R.id.add_ingredient_btn);
         addIngredient.setOnClickListener(this::addIngredient);
         addStep = root.findViewById(R.id.add_step_btn);
-
-        //final TextView textView = binding.textNewRecipe;
-        //newRecipeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        //newRecipeViewModel.getmRecipeName().observe(getViewLifecycleOwner(), recipeTitle::setText);
-        //newRecipeViewModel.getmRecipeDescription().observe(getViewLifecycleOwner(), recipeDescription::setText);
+        addStep.setOnClickListener(this::addStep);
 
         assert getArguments() != null;
         int recipeId = NewRecipeFragmentArgs.fromBundle(getArguments()).getRecipeId();
-        if(recipeId != -1){
-            recipe = recipeDao.loadSingle(recipeId);
-            recipeTitle.setText(recipe.getTitle());
-            recipeDescription.setText(recipe.getDescription());
-        } else {
-            recipe = new Recipe();
-        }
+
+        newRecipeViewModel.setRecipeId(recipeId);
+
+        //final TextView textView = binding.textNewRecipe;
+        //newRecipeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        newRecipeViewModel.getRecipeName().observe(getViewLifecycleOwner(), recipeTitle::setText);
+        newRecipeViewModel.getRecipeDescription().observe(getViewLifecycleOwner(), recipeDescription::setText);
+
+        //if(recipeId != -1){
+        //    recipe = recipeDao.loadSingle(recipeId);
+        //    recipeTitle.setText(recipe.getTitle());
+        //    recipeDescription.setText(recipe.getDescription());
 
         return root;
     }
@@ -108,7 +107,7 @@ public class NewRecipeFragment extends Fragment {
                     ingredient.setIngredientName(ingredientName.getText().toString());
                     ingredient.setQuantity(ingredientQuantity.getText().toString());
                     ingredient.setUnit(ingredientUnit.getText().toString());
-                    ingredient.setRecipeId(recipe.getRecipeId());
+                    ingredient.setRecipeId(newRecipeViewModel.getRecipeId());
                     ingredientDao.upsert(ingredient);
                     //newRecipeViewModel.addIngredient(ingredientDto);
                     //newRecipeViewModel.getmIngredients().getValue().get(0).setIngredientQuantity("999");
@@ -133,9 +132,9 @@ public class NewRecipeFragment extends Fragment {
         dialog.setPositiveButton("Save Ingredient",
                 (dialog1, which) -> {
                     Step step = new Step();
-                    step.setDescription(stepDescription.toString());
-                    step.setOrder(stepDao.getStepsCount(recipe.getRecipeId()) + 1);
-                    step.setRecipeId(recipe.getRecipeId());
+                    step.setDescription(stepDescription.getText().toString());
+                    step.setOrder(stepDao.getStepsCount(newRecipeViewModel.getRecipeId()) + 1);
+                    step.setRecipeId(newRecipeViewModel.getRecipeId());
                     stepDao.upsert(step);
                     dialog1.dismiss();
                 });
@@ -146,7 +145,7 @@ public class NewRecipeFragment extends Fragment {
         //if(hasErrors()){
         //    return;
         //}
-
+        Recipe recipe = newRecipeViewModel.getRecipe();
         recipe.setTitle(recipeTitle.getText().toString());
         recipe.setDescription(recipeDescription.getText().toString());
         appDatabase.runInTransaction(() -> recipeDao.upsert(recipe));

@@ -31,6 +31,9 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipes")
     LiveData<List<Recipe>> getAllEntities();
 
+    @Query("SELECT * FROM recipes where title LIKE '%' || :search || '%'")
+    LiveData<List<Recipe>> getAllEntitiesLikeSearchString(String search);
+
     @Query("SELECT * FROM recipes WHERE recipeId=:id")
     Recipe loadSingle(int id);
     @Transaction
@@ -39,6 +42,10 @@ public interface RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE recipeId=:id")
     LiveData<RecipeWithIngredientsAndSteps> loadSingleRecipeWithIngredientsAndSteps(int id);
+    @Query("SELECT title FROM recipes WHERE recipeId=:id")
+    LiveData<String> loadSingleRecipeTitle(int id);
+    @Query("SELECT description FROM recipes WHERE recipeId=:id")
+    LiveData<String> loadSingleRecipeDescription(int id);
 //
     //@Transaction
     //@Query("SELECT * FROM recipes WHERE recipeId=:id")

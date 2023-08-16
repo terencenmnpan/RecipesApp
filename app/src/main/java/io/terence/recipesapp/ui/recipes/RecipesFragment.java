@@ -45,17 +45,14 @@ import java.util.List;
  */
 public class RecipesFragment extends Fragment {
     private View root;
-    private RecipeDao recipeDao;
-    private AppDatabase appDatabase;
+    RecipesViewModel recipesViewModel;
     androidx.navigation.fragment.NavHostFragment navHostFragment;
     NavController navController;
-    List<Recipe> entityList = new ArrayList<>();
     private FragmentRecipesBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        RecipesViewModel recipesViewModel =
-                new ViewModelProvider(this).get(RecipesViewModel.class);
+        recipesViewModel = new ViewModelProvider(this).get(RecipesViewModel.class);
 
         navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment_content_main);
@@ -63,17 +60,14 @@ public class RecipesFragment extends Fragment {
 
         binding = FragmentRecipesBinding.inflate(inflater, container, false);
 
-        appDatabase = AppDatabase.getInstance(this.getContext());
-        recipeDao = appDatabase.recipeDao();
         loadTableData();
+        root = binding.getRoot();
         return root;
     }
 
     private void loadTableData() {
 
         RecyclerView recyclerView = binding.recyclerviewRecipes;
-            RecipesViewModel recipesViewModel =
-                    new ViewModelProvider(this).get(RecipesViewModel.class);
             ListAdapter<Recipe, RecipeViewHolder> stepsRecyclerViewAdapter = new RecipeAdapter(recipe -> {
                 io.terence.recipesapp.ui.recipes.RecipesFragmentDirections.ActionNavRecipesToNavNewRecipe actionNavRecipesToNavNewRecipe =
                         RecipesFragmentDirections.actionNavRecipesToNavNewRecipe();
@@ -82,7 +76,6 @@ public class RecipesFragment extends Fragment {
             });
             recipesViewModel.getRecipes().observe(getViewLifecycleOwner(), stepsRecyclerViewAdapter::submitList);
 
-            root = binding.getRoot();
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
             recyclerView.setAdapter(stepsRecyclerViewAdapter);
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import io.terence.recipesapp.config.AppDatabase;
 import io.terence.recipesapp.daos.RecipeDao;
+import io.terence.recipesapp.entities.Recipe;
 import io.terence.recipesapp.entities.RecipeWithIngredientsAndSteps;
 
 public class NewRecipeViewModel extends AndroidViewModel {
@@ -36,6 +37,15 @@ public class NewRecipeViewModel extends AndroidViewModel {
     }
     public LiveData<RecipeWithIngredientsAndSteps> getRecipeWithIngredientsAndSteps(){
         return recipeDao.loadSingleRecipeWithIngredientsAndSteps(recipeId);
+    }
+    public Recipe getRecipe(){
+        return recipeDao.loadSingle(recipeId);
+    }
+    public LiveData<String> getRecipeName(){
+        return recipeDao.loadSingleRecipeTitle(recipeId);
+    }
+    public LiveData<String> getRecipeDescription(){
+        return recipeDao.loadSingleRecipeDescription(recipeId);
     }
     public int getRecipeId() {
         return recipeId;

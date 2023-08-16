@@ -44,7 +44,7 @@ public class StepsRecyclerViewAdapter extends ListAdapter<Step, StepsRecyclerVie
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = getCurrentList().get(position);
         holder.mStepDescription.setText(getItem(position).getDescription());
-        holder.mStepNumber.setText(getItem(position).getOrder());
+        holder.mStepNumber.setText(Integer.toString(getItem(position).getOrder()));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

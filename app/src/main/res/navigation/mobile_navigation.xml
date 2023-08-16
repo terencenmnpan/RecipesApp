@@ -42,4 +42,13 @@
         android:name="io.terence.recipesapp.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/nav_search"
+        android:name="io.terence.recipesapp.ui.search.SearchFragment"
+        android:label="Search Recipes"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_nav_search_to_nav_new_recipe"
+            app:destination="@id/nav_new_recipe" />
+    </fragment>
 </navigation>
