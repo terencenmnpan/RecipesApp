@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.time.LocalDateTime;
+
 import io.terence.recipesapp.R;
 import io.terence.recipesapp.config.AppDatabase;
 import io.terence.recipesapp.daos.IngredientDao;
@@ -116,6 +118,7 @@ public class NewRecipeFragment extends Fragment {
                     ingredient.setQuantity(ingredientQuantity.getText().toString());
                     ingredient.setUnit(ingredientUnit.getText().toString());
                     ingredient.setRecipeId(newRecipeViewModel.getRecipeId());
+                    ingredient.setCreateDate(LocalDateTime.now());
                     ingredientDao.upsert(ingredient);
                     dialog.dismiss();
                 }
@@ -151,6 +154,7 @@ public class NewRecipeFragment extends Fragment {
                     step.setDescription(stepDescription.getText().toString());
                     step.setOrder(stepDao.getStepsCount(newRecipeViewModel.getRecipeId()) + 1);
                     step.setRecipeId(newRecipeViewModel.getRecipeId());
+                    step.setCreateDate(LocalDateTime.now());
                     stepDao.upsert(step);
                     dialog.dismiss();
                 }

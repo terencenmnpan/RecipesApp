@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -20,9 +21,12 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalDateTime;
+
 import io.terence.recipesapp.config.AppDatabase;
 import io.terence.recipesapp.daos.RecipeDao;
 import io.terence.recipesapp.databinding.ActivityMainBinding;
+import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Recipe;
 
 public class MainActivity extends AppCompatActivity {
@@ -104,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void addRecipe(View view) {
         Context context = view.getContext();
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
@@ -114,22 +117,36 @@ public class MainActivity extends AppCompatActivity {
         layout.addView(recipeName); // Notice this is an add method
 
 // Add another TextView here for the "Description" label
-        final EditText recipeTitle = new EditText(context);
-        recipeTitle.setHint("Recipe Description");
-        layout.addView(recipeTitle); // Another add method
+        final EditText recipeDescription = new EditText(context);
+        recipeDescription.setHint("Recipe Description");
+        layout.addView(recipeDescription); // Another add method
 
 
-        dialog.setView(layout); // Again this is a set method, not add
-        dialog.setPositiveButton("Save Recipe",
-                (dialog1, which) -> {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setView(layout) // Again this is a set method, not add
+                .setPositiveButton("Save Recipe", null)
+                .setNegativeButton("Cancel", (dialog1, which) -> {dialog1.dismiss();}).create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view1 -> {
+                if(recipeName.getText().toString().length() == 0){
+                    recipeName.setError("Recipe Name Must Have a Value");
+                }
+                if(recipeDescription.getText().toString().length() == 0){
+                    recipeDescription.setError("Recipe Description Must Have a Value");
+                }
+                if(recipeName.getError() == null && recipeDescription.getError() == null){
                     Recipe recipe = new Recipe();
                     recipe.setTitle(recipeName.getText().toString());
-                    recipe.setDescription(recipeTitle.getText().toString());
+                    recipe.setDescription(recipeDescription.getText().toString());
+                    recipe.setCreateDate(LocalDateTime.now());
                     recipeDao.upsert(recipe);
-                    //newRecipeViewModel.addIngredient(ingredientDto);
-                    //newRecipeViewModel.getmIngredients().getValue().get(0).setIngredientQuantity("999");
-                    dialog1.dismiss();
-                });
+                    dialog.dismiss();
+                }
+            });
+        });
         dialog.show();
     }
 }
