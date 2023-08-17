@@ -68,16 +68,16 @@ public class RecipesFragment extends Fragment {
     private void loadTableData() {
 
         RecyclerView recyclerView = binding.recyclerviewRecipes;
-            ListAdapter<Recipe, RecipeViewHolder> stepsRecyclerViewAdapter = new RecipeAdapter(recipe -> {
-                io.terence.recipesapp.ui.recipes.RecipesFragmentDirections.ActionNavRecipesToNavNewRecipe actionNavRecipesToNavNewRecipe =
-                        RecipesFragmentDirections.actionNavRecipesToNavNewRecipe();
-                actionNavRecipesToNavNewRecipe.setRecipeId(recipe.getRecipeId());
-                navController.navigate(actionNavRecipesToNavNewRecipe);
-            });
-            recipesViewModel.getRecipes().observe(getViewLifecycleOwner(), stepsRecyclerViewAdapter::submitList);
+        ListAdapter<Recipe, RecipeViewHolder> recyclerViewAdapter = new RecipeAdapter(recipe -> {
+            io.terence.recipesapp.ui.recipes.RecipesFragmentDirections.ActionNavRecipesToNavNewRecipe actionNavRecipesToNavNewRecipe =
+                    RecipesFragmentDirections.actionNavRecipesToNavNewRecipe();
+            actionNavRecipesToNavNewRecipe.setRecipeId(recipe.getRecipeId());
+            navController.navigate(actionNavRecipesToNavNewRecipe);
+        });
+        recipesViewModel.getRecipes().observe(getViewLifecycleOwner(), recyclerViewAdapter::submitList);
 
-            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-            recyclerView.setAdapter(stepsRecyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
     @Override
     public void onDestroyView() {
@@ -122,20 +122,15 @@ public class RecipesFragment extends Fragment {
 
     private static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView imageView;
         private final TextView textView;
-        private final Button addToShopping;
 
         public RecipeViewHolder(ItemRecipeBinding binding) {
             super(binding.getRoot());
-            imageView = binding.imageViewItemTransform;
             textView = binding.textViewItemTransform;
-            addToShopping = binding.button;
         }
 
         public void bind(final Recipe recipe, final RecipeClickListener listener) {
             itemView.setOnClickListener(v -> listener.onRecipeClick(recipe));
-            //TODO add on fling gesture listener for addtoshopping cart
         }
     }
 }

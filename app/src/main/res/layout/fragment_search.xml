@@ -10,36 +10,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+        android:orientation="horizontal">
 
 
-            <EditText
-                android:id="@+id/editTextText"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="text"
-                android:hint="@string/search_string" />
+        <EditText
+            android:id="@+id/searchString"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/search_string"
+            android:inputType="text" />
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/search" />
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_searchrecipes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.recipes.RecipesFragment" />
+        <Button
+            android:id="@+id/searchBtn"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search" />
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_searchrecipes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        tools:context=".ui.recipes.RecipesFragment">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 
 </FrameLayout>

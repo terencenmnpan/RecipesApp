@@ -6,15 +6,18 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,10 +41,13 @@ public class SearchFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private View root;
     SearchViewModel searchViewModel;
     androidx.navigation.fragment.NavHostFragment navHostFragment;
     NavController navController;
     private FragmentSearchBinding binding;
+    EditText searchString;
+    Button searchBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,25 +60,34 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         searchViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
         binding = FragmentSearchBinding.inflate(inflater, container, false);
-        loadTableData();
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        root = binding.getRoot();
+        searchString = root.findViewById(R.id.searchString);
+        searchBtn = root.findViewById(R.id.searchBtn);
+        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_content_main);
+        navController = navHostFragment.getNavController();
+        searchBtn.setOnClickListener(this::searchRecipes);
+        return root;
     }
 
     private void loadTableData() {
 
         RecyclerView recyclerView = binding.recyclerviewSearchrecipes;
-        ListAdapter<Recipe, SearchFragment.RecipeViewHolder> stepsRecyclerViewAdapter = new SearchFragment.RecipeAdapter(recipe -> {
+        ListAdapter<Recipe, SearchFragment.RecipeViewHolder> recyclerViewAdapter = new SearchFragment.RecipeAdapter(recipe -> {
             SearchFragmentDirections.ActionNavSearchToNavNewRecipe actionNavSearchToNavNewRecipe =
                     io.terence.recipesapp.ui.search.SearchFragmentDirections.actionNavSearchToNavNewRecipe();
             actionNavSearchToNavNewRecipe.setRecipeId(recipe.getRecipeId());
             navController.navigate(actionNavSearchToNavNewRecipe);
         });
-        searchViewModel.getRecipes().observe(getViewLifecycleOwner(), stepsRecyclerViewAdapter::submitList);
+        searchViewModel.getSearchResults().observe(getViewLifecycleOwner(), recyclerViewAdapter::submitList);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recyclerView.setAdapter(stepsRecyclerViewAdapter);
+        recyclerView.setAdapter(recyclerViewAdapter);
     }
-
+    public void searchRecipes(View view){
+        searchViewModel.runSearch(searchString.getText().toString());
+        loadTableData();
+    }
     private static class RecipeAdapter extends ListAdapter<Recipe, SearchFragment.RecipeViewHolder> {
         private final RecipeClickListener listener;
 
@@ -108,22 +123,22 @@ public class SearchFragment extends Fragment {
 
     }
 
-    private static class RecipeViewHolder extends RecyclerView.ViewHolder {
+    private static class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        private final ImageView imageView;
         private final TextView textView;
-        private final Button addToShopping;
 
         public RecipeViewHolder(ItemRecipeBinding binding) {
             super(binding.getRoot());
-            imageView = binding.imageViewItemTransform;
             textView = binding.textViewItemTransform;
-            addToShopping = binding.button;
         }
 
         public void bind(final Recipe recipe, final RecipeClickListener listener) {
             itemView.setOnClickListener(v -> listener.onRecipeClick(recipe));
-            //TODO add on fling gesture listener for addtoshopping cart
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
         }
     }
 }

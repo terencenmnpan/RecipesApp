@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
@@ -22,8 +23,11 @@ public class SearchViewModel extends AndroidViewModel {
         appDatabase = AppDatabase.getInstance(this.getApplication());
         recipeDao = appDatabase.recipeDao();
     }
-
-    public LiveData<List<Recipe>> getRecipes(){
-        return recipeDao.getAllEntities();
+    public void runSearch(String searchString){
+        searchResults = recipeDao.getAllEntitiesLikeSearchString(searchString);
+    }
+    LiveData<List<Recipe>> searchResults;
+    public LiveData<List<Recipe>> getSearchResults() {
+        return searchResults;
     }
 }

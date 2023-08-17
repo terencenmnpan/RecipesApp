@@ -2,6 +2,7 @@ package io.terence.recipesapp.ui.reflow;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,86 +66,104 @@ public class NewRecipeFragment extends Fragment {
 
         newRecipeViewModel.setRecipeId(recipeId);
 
-        //final TextView textView = binding.textNewRecipe;
-        //newRecipeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         newRecipeViewModel.getRecipeName().observe(getViewLifecycleOwner(), recipeTitle::setText);
         newRecipeViewModel.getRecipeDescription().observe(getViewLifecycleOwner(), recipeDescription::setText);
 
-        //if(recipeId != -1){
-        //    recipe = recipeDao.loadSingle(recipeId);
-        //    recipeTitle.setText(recipe.getTitle());
-        //    recipeDescription.setText(recipe.getDescription());
 
         return root;
     }
 
     public void addIngredient(View view) {
         Context context = view.getContext();
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-// Add a TextView here for the "Title" label, as noted in the comments
         final EditText ingredientName = new EditText(context);
         ingredientName.setHint("Ingredient Name");
         layout.addView(ingredientName); // Notice this is an add method
 
-// Add another TextView here for the "Description" label
         final EditText ingredientQuantity = new EditText(context);
         ingredientQuantity.setHint("Ingredient Quantity");
         layout.addView(ingredientQuantity); // Another add method
 
-// Add another TextView here for the "Description" label
         final EditText ingredientUnit = new EditText(context);
         ingredientUnit.setHint("Ingredient Unit");
         layout.addView(ingredientUnit); // Another add method
 
 
-        dialog.setView(layout); // Again this is a set method, not add
-        dialog.setPositiveButton("Save Ingredient",
-                (dialog1, which) -> {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setView(layout)
+                .setPositiveButton("Save Ingredient", null)
+                .setNegativeButton("Cancel", (dialog1, which) -> dialog1.dismiss()).create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view1 -> {
+                if(ingredientName.getText().length() == 0){
+                    ingredientName.setError("Ingredient Name Must Have a Value");
+                }
+                if(ingredientQuantity.getText().length() == 0){
+                    ingredientQuantity.setError("Ingredient Quantity Must Have a Value");
+                }
+                if(ingredientUnit.getText().length() == 0){
+                    ingredientUnit.setError("Ingredient Unit Must Have a Value");
+                }
+                if (ingredientName.getError() == null &&
+                        ingredientQuantity.getError() == null &&
+                        ingredientUnit.getError() == null) {
                     Ingredient ingredient = new Ingredient();
                     ingredient.setIngredientName(ingredientName.getText().toString());
                     ingredient.setQuantity(ingredientQuantity.getText().toString());
                     ingredient.setUnit(ingredientUnit.getText().toString());
                     ingredient.setRecipeId(newRecipeViewModel.getRecipeId());
                     ingredientDao.upsert(ingredient);
-                    //newRecipeViewModel.addIngredient(ingredientDto);
-                    //newRecipeViewModel.getmIngredients().getValue().get(0).setIngredientQuantity("999");
-                    dialog1.dismiss();
-                });
+                    dialog.dismiss();
+                }
+            });
+        });
+
         dialog.show();
     }
 
     public void addStep(View view) {
         Context context = view.getContext();
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
 
-// Add a TextView here for the "Title" label, as noted in the comments
         final EditText stepDescription = new EditText(context);
         stepDescription.setHint("Step Description");
         layout.addView(stepDescription); // Notice this is an add method
 
-
-        dialog.setView(layout); // Again this is a set method, not add
-        dialog.setPositiveButton("Save Ingredient",
-                (dialog1, which) -> {
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setView(layout)
+                .setPositiveButton("Save Ingredient", null)
+                .setNegativeButton("Cancel", (dialog1, which) -> {dialog1.dismiss();})
+                .create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+            button.setOnClickListener(view1 -> {
+                if(stepDescription.getText().length() == 0){
+                    stepDescription.setError("Step Description Must Have a Value");
+                }
+                if(stepDescription.getError() == null){
                     Step step = new Step();
                     step.setDescription(stepDescription.getText().toString());
                     step.setOrder(stepDao.getStepsCount(newRecipeViewModel.getRecipeId()) + 1);
                     step.setRecipeId(newRecipeViewModel.getRecipeId());
                     stepDao.upsert(step);
-                    dialog1.dismiss();
-                });
+                    dialog.dismiss();
+                }
+            });
+        });
         dialog.show();
     }
+
     public void saveRecipe(){
-        //validateRecipe();
-        //if(hasErrors()){
-        //    return;
-        //}
+        validateRecipe();
+        if(hasRecipeErrors()){
+            return;
+        }
         Recipe recipe = newRecipeViewModel.getRecipe();
         recipe.setTitle(recipeTitle.getText().toString());
         recipe.setDescription(recipeDescription.getText().toString());
@@ -152,6 +171,20 @@ public class NewRecipeFragment extends Fragment {
         Toast.makeText(getActivity(), "Recipe has been saved",
                 Toast.LENGTH_LONG).show();
     }
+
+    private boolean hasRecipeErrors() {
+        return recipeTitle.getError() != null || recipeDescription.getError() != null;
+    }
+
+    private void validateRecipe() {
+        if(recipeTitle.getText().toString().length() == 0){
+            recipeTitle.setError("Recipe Name Must Have a Value");
+        }
+        if(recipeDescription.getText().toString().length() == 0){
+            recipeDescription.setError("Recipe Description Must Have a Value");
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

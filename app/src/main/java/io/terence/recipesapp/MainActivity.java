@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
 // Add another TextView here for the "Description" label
         final EditText recipeTitle = new EditText(context);
-        recipeTitle.setHint("Recipe Title");
+        recipeTitle.setHint("Recipe Description");
         layout.addView(recipeTitle); // Another add method
 
 
