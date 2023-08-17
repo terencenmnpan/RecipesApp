@@ -52,6 +52,12 @@
                 android:text="@string/save_recipe" />
 
             <Button
+                android:id="@+id/delete_recipe_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_recipe" />
+
+            <Button
                 android:id="@+id/add_ingredient_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,7 +78,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/steps_fragment_view"
-                android:name="io.terence.recipesapp.ui.steps.ItemStepsFragment"
+                android:name="io.terence.recipesapp.ui.steps.StepsFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

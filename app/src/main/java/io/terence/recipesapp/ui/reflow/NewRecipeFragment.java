@@ -15,6 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +30,7 @@ import io.terence.recipesapp.databinding.FragmentNewRecipeBinding;
 import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Recipe;
 import io.terence.recipesapp.entities.Step;
+import io.terence.recipesapp.ui.search.SearchFragmentDirections;
 
 public class NewRecipeFragment extends Fragment {
 
@@ -39,9 +43,12 @@ public class NewRecipeFragment extends Fragment {
     private EditText recipeTitle;
     private EditText recipeDescription;
     private Button saveRecipe;
+    private Button deleteRecipe;
     private Button addIngredient;
     private Button addStep;
     NewRecipeViewModel newRecipeViewModel;
+    androidx.navigation.fragment.NavHostFragment navHostFragment;
+    NavController navController;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,12 +59,18 @@ public class NewRecipeFragment extends Fragment {
         ingredientDao = appDatabase.ingredientDao();
         stepDao = appDatabase.stepDao();
 
+        navHostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment_content_main);
+        navController = navHostFragment.getNavController();
+
         binding = FragmentNewRecipeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         recipeTitle = root.findViewById(R.id.recipe_title);
         recipeDescription = root.findViewById(R.id.recipe_description);
         saveRecipe = root.findViewById(R.id.save_recipe_btn);
         saveRecipe.setOnClickListener(v -> saveRecipe());
+        deleteRecipe = root.findViewById(R.id.delete_recipe_btn);
+        deleteRecipe.setOnClickListener(v -> deleteRecipe());
         addIngredient = root.findViewById(R.id.add_ingredient_btn);
         addIngredient.setOnClickListener(this::addIngredient);
         addStep = root.findViewById(R.id.add_step_btn);
@@ -171,9 +184,18 @@ public class NewRecipeFragment extends Fragment {
         Recipe recipe = newRecipeViewModel.getRecipe();
         recipe.setTitle(recipeTitle.getText().toString());
         recipe.setDescription(recipeDescription.getText().toString());
+        recipe.setModifiedDate(LocalDateTime.now());
         appDatabase.runInTransaction(() -> recipeDao.upsert(recipe));
         Toast.makeText(getActivity(), "Recipe has been saved",
                 Toast.LENGTH_LONG).show();
+    }
+
+    public void deleteRecipe(){
+        Recipe recipe = newRecipeViewModel.getRecipe();
+        appDatabase.runInTransaction(() -> recipeDao.delete(recipe));
+        NavDirections actionNavSearchToNavNewRecipe =
+                io.terence.recipesapp.ui.reflow.NewRecipeFragmentDirections.actionNavNewRecipeToNavRecipes();
+        navController.navigate(actionNavSearchToNavNewRecipe);
     }
 
     private boolean hasRecipeErrors() {

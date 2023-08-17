@@ -5,7 +5,11 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -14,7 +18,9 @@ import io.terence.recipesapp.entities.Ingredient;
 
 public class IngredientsRecyclerViewAdapter extends ListAdapter<Ingredient, IngredientsRecyclerViewAdapter.ViewHolder> {
 
-    public IngredientsRecyclerViewAdapter() {
+    public final IngredientOnMenuItemClickListener deleteIngredientOnMenuItemClickListener;
+    public final IngredientOnMenuItemClickListener editIngredientOnMenuItemClickListener;
+    public IngredientsRecyclerViewAdapter(IngredientOnMenuItemClickListener deleteIngredientOnMenuItemClickListener, IngredientOnMenuItemClickListener editIngredientOnMenuItemClickListener) {
 
         super(new DiffUtil.ItemCallback<>() {
             @Override
@@ -27,12 +33,15 @@ public class IngredientsRecyclerViewAdapter extends ListAdapter<Ingredient, Ingr
                 return oldItem.equals(newItem);
             }
         });
+        this.deleteIngredientOnMenuItemClickListener = deleteIngredientOnMenuItemClickListener;
+        this.editIngredientOnMenuItemClickListener = editIngredientOnMenuItemClickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return new ViewHolder(IngredientItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(IngredientItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false),
+                deleteIngredientOnMenuItemClickListener, editIngredientOnMenuItemClickListener);
 
     }
 
@@ -45,19 +54,38 @@ public class IngredientsRecyclerViewAdapter extends ListAdapter<Ingredient, Ingr
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         public final TextView mIngredientNameView;
         public final TextView mIngredientQuantityView;
         public final TextView mIngredientUnitView;
         public Ingredient mItem;
-
-        public ViewHolder(IngredientItemBinding binding) {
+        public final IngredientOnMenuItemClickListener deleteIngredientOnMenuItemClickListener;
+        public final IngredientOnMenuItemClickListener editIngredientOnMenuItemClickListener;
+        public ViewHolder(IngredientItemBinding binding, IngredientOnMenuItemClickListener deleteIngredientOnMenuItemClickListener, IngredientOnMenuItemClickListener editIngredientOnMenuItemClickListener) {
             super(binding.getRoot());
             mIngredientNameView = binding.ingredientName;
             mIngredientQuantityView = binding.ingredientQuantity;
             mIngredientUnitView = binding.ingredientUnit;
+            this.deleteIngredientOnMenuItemClickListener = deleteIngredientOnMenuItemClickListener;
+            this.editIngredientOnMenuItemClickListener = editIngredientOnMenuItemClickListener;
+            binding.getRoot().setOnCreateContextMenuListener(this);
         }
 
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+            //menuInfo is null
+            MenuItem delete = menu.add(Menu.NONE, v.getId(),
+                    Menu.NONE, "Delete");
+            delete.setOnMenuItemClickListener(item -> {
+                deleteIngredientOnMenuItemClickListener.onMenuItemClickListener(mItem);
+                return false;});
+            MenuItem edit = menu.add(Menu.NONE, v.getId(),
+                    Menu.NONE, "Edit");
+            edit.setOnMenuItemClickListener(item -> {
+                editIngredientOnMenuItemClickListener.onMenuItemClickListener(mItem);
+                return false;});
+        }
         @Override
         public String toString() {
             return "ViewHolder{" +

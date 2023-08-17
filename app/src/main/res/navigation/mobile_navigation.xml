@@ -29,6 +29,9 @@
             android:name="recipeId"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_nav_new_recipe_to_nav_recipes"
+            app:destination="@id/nav_recipes" />
     </fragment>
 
     <fragment
