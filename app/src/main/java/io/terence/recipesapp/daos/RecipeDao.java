@@ -40,8 +40,12 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipes")
     List<RecipeWithIngredientsAndSteps> getAllRecipeWithIngredientsAndSteps();
 
+    @Transaction
     @Query("SELECT * FROM recipes WHERE recipeId=:id")
     LiveData<RecipeWithIngredientsAndSteps> loadSingleRecipeWithIngredientsAndSteps(int id);
+    @Transaction
+    @Query("SELECT * FROM recipes WHERE recipeId=:id")
+    RecipeWithIngredientsAndSteps loadRecipeWithIngredientsAndSteps(int id);
     @Query("SELECT title FROM recipes WHERE recipeId=:id")
     LiveData<String> loadSingleRecipeTitle(int id);
     @Query("SELECT description FROM recipes WHERE recipeId=:id")

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.slideshow.ShoppingListFragment">
+    tools:context=".ui.shoppinglist.ShoppingListFragment">
 
     <TextView
         android:id="@+id/text_shopping_list"

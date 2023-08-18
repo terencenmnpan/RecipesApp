@@ -1,4 +1,4 @@
-package io.terence.recipesapp.ui.slideshow;
+package io.terence.recipesapp.ui.shoppinglist;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.terence.recipesapp.databinding.FragmentSlideshowBinding;
+import io.terence.recipesapp.ui.slideshow.ShoppingListViewModel;
 
 public class ShoppingListFragment extends Fragment {
 
@@ -18,7 +19,7 @@ public class ShoppingListFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-     ShoppingListViewModel slideshowViewModel =
+     io.terence.recipesapp.ui.slideshow.ShoppingListViewModel slideshowViewModel =
                 new ViewModelProvider(this).get(ShoppingListViewModel.class);
 
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);

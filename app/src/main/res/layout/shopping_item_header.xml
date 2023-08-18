@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/shopping_item_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:text="@string/shopping_item"
+        android:gravity="left"
+        android:layout_weight="1"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <android.widget.Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/shopping_item_added_date_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_gravity="right"
+        android:text="@string/added_date"
+        android:layout_weight="1"
+        android:textAppearance="?attr/textAppearanceListItem"/>
+</LinearLayout>

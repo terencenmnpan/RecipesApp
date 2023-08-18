@@ -25,7 +25,7 @@ import io.terence.recipesapp.R;
 import io.terence.recipesapp.config.AppDatabase;
 import io.terence.recipesapp.daos.IngredientDao;
 import io.terence.recipesapp.entities.Ingredient;
-import io.terence.recipesapp.ui.reflow.NewRecipeViewModel;
+import io.terence.recipesapp.ui.edit.NewRecipeViewModel;
 
 /**
  * A fragment representing a list of Items.

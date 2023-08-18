@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:onClick="addIngredient"
-    tools:context=".ui.reflow.NewRecipeFragment">
+    tools:context=".ui.edit.NewRecipeFragment">
 
     <ScrollView
         android:layout_width="match_parent"

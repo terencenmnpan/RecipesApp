@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/nav_new_recipe"
-        android:name="io.terence.recipesapp.ui.reflow.NewRecipeFragment"
+        android:name="io.terence.recipesapp.ui.edit.NewRecipeFragment"
         android:label="@string/menu_new_recipe"
         tools:layout="@layout/fragment_new_recipe" >
         <argument
@@ -36,9 +36,9 @@
 
     <fragment
         android:id="@+id/nav_shopping_list"
-        android:name="io.terence.recipesapp.ui.slideshow.ShoppingListFragment"
+        android:name="io.terence.recipesapp.ui.shoppinglist.ShoppingItemFragment"
         android:label="@string/menu_shopping_list"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/shoppingitem_list" />
 
     <fragment
         android:id="@+id/nav_settings"

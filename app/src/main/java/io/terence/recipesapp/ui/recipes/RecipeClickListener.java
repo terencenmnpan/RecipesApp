@@ -1,6 +1,4 @@
-package io.terence.recipesapp.common;
-
-import android.view.View;
+package io.terence.recipesapp.ui.recipes;
 
 import io.terence.recipesapp.entities.Recipe;
 

@@ -18,22 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.terence.recipesapp.R;
-import io.terence.recipesapp.common.RecipeClickListener;
-import io.terence.recipesapp.config.AppDatabase;
-import io.terence.recipesapp.databinding.FragmentRecipesBinding;
+import io.terence.recipesapp.ui.recipes.RecipeClickListener;
 import io.terence.recipesapp.databinding.FragmentSearchBinding;
 import io.terence.recipesapp.databinding.ItemRecipeBinding;
 import io.terence.recipesapp.entities.Recipe;
-import io.terence.recipesapp.ui.recipes.RecipesFragment;
-import io.terence.recipesapp.ui.recipes.RecipesFragmentDirections;
-import io.terence.recipesapp.ui.recipes.RecipesViewModel;
 
 public class SearchFragment extends Fragment {
 

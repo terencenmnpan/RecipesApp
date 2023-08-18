@@ -1,8 +1,7 @@
-package io.terence.recipesapp.ui.reflow;
+package io.terence.recipesapp.ui.edit;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import io.terence.recipesapp.databinding.FragmentNewRecipeBinding;
 import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Recipe;
 import io.terence.recipesapp.entities.Step;
-import io.terence.recipesapp.ui.search.SearchFragmentDirections;
 
 public class NewRecipeFragment extends Fragment {
 
@@ -153,7 +151,7 @@ public class NewRecipeFragment extends Fragment {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setCancelable(false)
                 .setView(layout)
-                .setPositiveButton("Save Ingredient", null)
+                .setPositiveButton("Save Step", null)
                 .setNegativeButton("Cancel", (dialog1, which) -> {dialog1.dismiss();})
                 .create();
         dialog.setOnShowListener(dialogInterface -> {
@@ -194,7 +192,7 @@ public class NewRecipeFragment extends Fragment {
         Recipe recipe = newRecipeViewModel.getRecipe();
         appDatabase.runInTransaction(() -> recipeDao.delete(recipe));
         NavDirections actionNavSearchToNavNewRecipe =
-                io.terence.recipesapp.ui.reflow.NewRecipeFragmentDirections.actionNavNewRecipeToNavRecipes();
+                io.terence.recipesapp.ui.edit.NewRecipeFragmentDirections.actionNavNewRecipeToNavRecipes();
         navController.navigate(actionNavSearchToNavNewRecipe);
     }
 

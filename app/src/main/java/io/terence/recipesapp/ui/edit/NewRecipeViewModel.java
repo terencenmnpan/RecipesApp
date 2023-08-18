@@ -1,4 +1,4 @@
-package io.terence.recipesapp.ui.reflow;
+package io.terence.recipesapp.ui.edit;
 
 import android.app.Application;
 

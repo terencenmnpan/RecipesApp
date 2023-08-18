@@ -24,7 +24,7 @@ import io.terence.recipesapp.R;
 import io.terence.recipesapp.config.AppDatabase;
 import io.terence.recipesapp.daos.StepDao;
 import io.terence.recipesapp.entities.Step;
-import io.terence.recipesapp.ui.reflow.NewRecipeViewModel;
+import io.terence.recipesapp.ui.edit.NewRecipeViewModel;
 
 /**
  * A fragment representing a list of Items.
@@ -108,7 +108,7 @@ public class StepsFragment extends Fragment {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setCancelable(false)
                 .setView(layout)
-                .setPositiveButton("Save Ingredient", null)
+                .setPositiveButton("Save Step", null)
                 .setNegativeButton("Cancel", (dialog1, which) -> {dialog1.dismiss();})
                 .create();
         dialog.setOnShowListener(dialogInterface -> {
