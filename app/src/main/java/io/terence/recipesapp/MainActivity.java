@@ -2,6 +2,8 @@ package io.terence.recipesapp;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -12,7 +14,12 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -35,11 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
     private RecipeDao recipeDao;
     private AppDatabase appDatabase;
-
+    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
         //Initialize stuff
         appDatabase = AppDatabase.getInstance(getApplicationContext());
         recipeDao = appDatabase.recipeDao();
@@ -72,6 +82,19 @@ public class MainActivity extends AppCompatActivity {
                     .build();
             NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
             NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        }
+
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            reload();
+        } else{
+            redirectToLogin();
         }
     }
 
@@ -149,4 +172,19 @@ public class MainActivity extends AppCompatActivity {
         });
         dialog.show();
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    private void redirectToLogin() {
+        Intent loginIntent =  new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(loginIntent);
+        if(mAuth.getCurrentUser() != null){
+            return;
+        }
+    }
+
+    private void reload() { }
+
 }
