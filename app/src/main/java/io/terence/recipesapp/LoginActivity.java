@@ -3,6 +3,7 @@ package io.terence.recipesapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Group;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,32 +30,50 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
 
-    private ActivityLoginBinding mBinding;
-
     private FirebaseAuth mAuth;
-
+    EditText fieldEmail;
+    EditText fieldPassword;
+    TextView status;
+    TextView detail;
+    Button emailSignInButton;
+    Button emailCreateAccountButton;
+    Button signOutButton;
+    Button verifyEmailButton;
+    Group emailPasswordFields;
+    Group emailPasswordButtons;
+    Group signedInButtons;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //Initialize stuff
+        fieldEmail = findViewById(R.id.fieldEmail);
+        fieldPassword = findViewById(R.id.fieldPassword);
+        status = findViewById(R.id.status);
+        detail = findViewById(R.id.detail);
+        emailSignInButton = findViewById(R.id.emailSignInButton);
+        emailCreateAccountButton = findViewById(R.id.emailCreateAccountButton);
+        signOutButton = findViewById(R.id.signOutButton);
+        verifyEmailButton = findViewById(R.id.verifyEmailButton);
+        emailPasswordFields = findViewById(R.id.emailPasswordFields);
+        emailPasswordButtons = findViewById(R.id.emailPasswordButtons);
+        signedInButtons = findViewById(R.id.signedInButtons);
         setProgressBar(findViewById(R.id.progressBar));
-        Button emailSignInButton = findViewById(R.id.emailSignInButton);
+
+
         // Buttons
         emailSignInButton.setOnClickListener(v -> {
-            String email = mBinding.fieldEmail.getText().toString();
-            String password = mBinding.fieldPassword.getText().toString();
+            String email = fieldEmail.getText().toString();
+            String password = fieldPassword.getText().toString();
             signIn(email, password);
         });
-        Button emailCreateAccountButton = findViewById(R.id.emailCreateAccountButton);
         emailCreateAccountButton.setOnClickListener(v -> {
-            String email = mBinding.fieldEmail.getText().toString();
-            String password = mBinding.fieldPassword.getText().toString();
+            String email = fieldEmail.getText().toString();
+            String password = fieldPassword.getText().toString();
             createAccount(email, password);
         });
-        Button signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(v -> signOut());
-        Button verifyEmailButton = findViewById(R.id.verifyEmailButton);
         verifyEmailButton.setOnClickListener(v -> sendEmailVerification());
         Button reloadButton = findViewById(R.id.reloadButton);
         reloadButton.setOnClickListener(v -> reload());
@@ -124,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         if (!task.isSuccessful()) {
-                            mBinding.status.setText(R.string.auth_failed);
+                            status.setText(R.string.auth_failed);
                         }
                         hideProgressBar();
                     }
@@ -137,15 +158,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void sendEmailVerification() {
-        // Disable button
-        mBinding.verifyEmailButton.setEnabled(false);
+        // Disable button*
+        verifyEmailButton.setEnabled(false);
 
         // Send verification email
         final FirebaseUser user = mAuth.getCurrentUser();
         user.sendEmailVerification()
                 .addOnCompleteListener(this, task -> {
                     // Re-enable button
-                    mBinding.verifyEmailButton.setEnabled(true);
+                    verifyEmailButton.setEnabled(true);
 
                     if (task.isSuccessful()) {
                         Toast.makeText(getApplicationContext(),
@@ -177,25 +198,26 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+        finish();
     }
 
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = mBinding.fieldEmail.getText().toString();
+        String email = fieldEmail.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mBinding.fieldEmail.setError("Required.");
+            fieldEmail.setError("Required.");
             valid = false;
         } else {
-            mBinding.fieldEmail.setError(null);
+            fieldEmail.setError(null);
         }
 
-        String password = mBinding.fieldPassword.getText().toString();
+        String password = fieldPassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mBinding.fieldPassword.setError("Required.");
+            fieldPassword.setError("Required.");
             valid = false;
         } else {
-            mBinding.fieldPassword.setError(null);
+            fieldPassword.setError(null);
         }
 
         return valid;
@@ -204,26 +226,26 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         hideProgressBar();
         if (user != null) {
-            mBinding.status.setText(getString(R.string.emailpassword_status_fmt,
+            status.setText(getString(R.string.emailpassword_status_fmt,
                     user.getEmail(), user.isEmailVerified()));
-            mBinding.detail.setText(getString(R.string.firebase_status_fmt, user.getUid()));
+            detail.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
-            mBinding.emailPasswordButtons.setVisibility(View.GONE);
-            mBinding.emailPasswordFields.setVisibility(View.GONE);
-            mBinding.signedInButtons.setVisibility(View.VISIBLE);
+            emailPasswordButtons.setVisibility(View.GONE);
+            emailPasswordFields.setVisibility(View.GONE);
+            signedInButtons.setVisibility(View.VISIBLE);
 
             if (user.isEmailVerified()) {
-                mBinding.verifyEmailButton.setVisibility(View.GONE);
+                verifyEmailButton.setVisibility(View.GONE);
             } else {
-                mBinding.verifyEmailButton.setVisibility(View.VISIBLE);
+                verifyEmailButton.setVisibility(View.VISIBLE);
             }
         } else {
-            mBinding.status.setText(R.string.signed_out);
-            mBinding.detail.setText(null);
+            status.setText(R.string.signed_out);
+            detail.setText(null);
 
-            mBinding.emailPasswordButtons.setVisibility(View.VISIBLE);
-            mBinding.emailPasswordFields.setVisibility(View.VISIBLE);
-            mBinding.signedInButtons.setVisibility(View.GONE);
+            emailPasswordButtons.setVisibility(View.VISIBLE);
+            emailPasswordFields.setVisibility(View.VISIBLE);
+            signedInButtons.setVisibility(View.GONE);
         }
     }
 

@@ -3,7 +3,6 @@ package io.terence.recipesapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Menu;
@@ -17,9 +16,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -33,7 +29,6 @@ import java.time.LocalDateTime;
 import io.terence.recipesapp.config.AppDatabase;
 import io.terence.recipesapp.daos.RecipeDao;
 import io.terence.recipesapp.databinding.ActivityMainBinding;
-import io.terence.recipesapp.entities.Ingredient;
 import io.terence.recipesapp.entities.Recipe;
 
 public class MainActivity extends AppCompatActivity {
@@ -117,6 +112,14 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.nav_settings) {
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.nav_settings);
+        }
+        if (item.getItemId() == R.id.logout) {
+            FirebaseAuth.getInstance().signOut();
+            finish();
+        }
+        if (item.getItemId() == R.id.sync_to_cloud) {
+            //TODO save data
+            String userEmail = mAuth.getCurrentUser().getEmail();
         }
         return super.onOptionsItemSelected(item);
     }
